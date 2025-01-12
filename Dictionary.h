@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <fstream>
+#include <exception>
 #define PATH "C:\\Users\\Azerty\\Desktop\\TEST.txt"
 #define NEWPATH "C:\\Users\\Azerty\\Desktop\\NEWTEST.txt"
 
@@ -10,68 +11,24 @@ using namespace std;
 class Dictionary
 {
 private:
-	map<string, int> word;
+	//Создание словоря где ключ - слово, значение - сколько раз оно встречается в тексте
+	map<string, int> words;
 public:
-	Dictionary() = default;
-	Dictionary(map<string, int> word_S) : word{ word_S } {}
+	Dictionary() = default; //Конструктор по умолчанию
+	//Конструктор с параметрами для инициализации обьекиа при создании
+	Dictionary(map<string, int> word_S) noexcept : words{ word_S } {}
 
-	map<string, int> get_word() { return word; }
-	void set_word(map<string, int> word_S) { word = word_S; }
+	//Модификаторы и аксессоры для получения и установления словаря
+	map<string, int> get_word() const noexcept { return words; }
+	void set_word(map<string, int> word_S) noexcept { words = word_S; }
 
-	void load()
-	{
-		fstream stream(PATH, ios::in);
-		string new_word;
-		int count;
-
-		if (!stream)
-		{
-			/*throw*/
-		}
-
-		while (!stream.eof())
-		{
-			stream >> new_word;
-			word[new_word]++;
-		}
-		stream.close();
-	}
-	void print_all()
-	{
-		for (auto pair : word)
-		{
-			cout << "Слово: " << pair.first << "\tКол-во раз: " << pair.second << "\n";
-		}
-	}
-	void print_most()
-	{
-		string most_word;
-		int count = 0;
-
-		for (auto pair : word)
-		{
-			if (pair.second > count)
-			{
-				most_word = pair.first;
-				count = pair.second;
-			}
-		}
-		cout << "Наиболее встречающееся слово: " << most_word << " Кол-во раз: " << count;
-	}
-	void save()
-	{
-		fstream stream(NEWPATH, ios::out);
-
-		if (!stream)
-		{
-			/*throw*/
-		}
-
-		for (auto pair : word)
-		{
-			stream << pair.first << "\n" << pair.second;
-		}
-		stream.close();
-	}
+	//Выгрузка текста из файла
+	void load();
+	//Вывод всей статистики слов
+	void print_all() noexcept;
+	//Вывод самого популярного слова
+	void print_most() noexcept;
+	//Загрузка статистики в новый файл
+	void save();
 };
 
